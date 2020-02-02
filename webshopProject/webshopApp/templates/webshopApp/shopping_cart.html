@@ -8,6 +8,7 @@
     </div>
     <div class="card-body">
         <table>
+
             <thead>
                 <tr>
                     <th>Item</th>
@@ -36,7 +37,9 @@
             <p>Nothing in your cart.</p>
             {% endif %}
         </table>
+        {% if cart %}
         <a href="{% url 'purchase' %}"><button>Purchase</button></a>
+        {% endif %}
       </div>
     </div>
   </div>

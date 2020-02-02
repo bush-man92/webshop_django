@@ -129,7 +129,7 @@ class shopping_cartView(LoginRequiredMixin, ListView):
         queryset = Cart.objects.filter(user_id=user.id).select_related('item')
         if quantity > 0 and user.is_authenticated:
             cart = Cart.objects.filter(user_id=user.id, item_id=item_id)
-            if quantity > cart[0].quantity:
+            if quantity >= cart[0].quantity:
                 Cart.objects.filter(user_id=user.id, item_id=item_id).delete()
             else:
                 quantity = cart[0].quantity - quantity
