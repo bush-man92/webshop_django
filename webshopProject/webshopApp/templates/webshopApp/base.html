@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Webshop - {% block title %}{% endblock %}</title>
+
+    <link href="http://localhost:8000/static/admin/css/base.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/admin/css/fonts.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/admin/css/forms.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/admin/css/responsive.css" rel="stylesheet">
+    <link href="http://localhost:8000/static/admin/css/widgets.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="{% url 'home' %}">Home</a></li>
+      {% if user.is_authenticated %}
+        <li><a href="{% url 'shopping_cart' %}">Your Cart</a></li>
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+      {% else %}
+        <li><a href="{% url 'registration' %}">Register Here</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+      {% endif %}
+      {% if user.is_superuser %}
+        <li><a href="{% url 'admin' %}">Approve comments</a></li>
+        <li><a href="{% url 'create_item' %}">Add Item</a></li>
+      {% endif %}
+      <form method="post" action="{% url 'home' %}">
+        {% csrf_token %}
+            <div><label for="Search">Search items by price or name</label></div>
+            <div><input type="text" value="" name="Search"></div>
+            <div><input type="submit" value="Search"></div>
+      </form>
+    </ul>
+  </body>
+</html>
+{% block content %}
+{% endblock %}

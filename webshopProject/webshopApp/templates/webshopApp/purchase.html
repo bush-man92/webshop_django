@@ -1,0 +1,29 @@
+{% extends "webshopApp/base.html" %}
+
+{% block content %}
+
+<form method="post" action="{% url 'purchase' %}">
+{% csrf_token %}
+<table>
+<tr>
+    <td>{{ form.address.label_tag }}</td>
+    <td>{{ form.address }}</td>
+    {% if form.errors.address %}
+        <td>{{ form.errors.address }}</td>
+    {% endif %}
+</tr>
+<tr>
+    <td>{{ form.paying.label_tag }}</td>
+    <td>{{ form.paying }}</td>
+</tr>
+<tr>
+    <td>{{ form.delivery.label_tag }}</td>
+    <td>{{ form.delivery }}</td>
+</tr>
+</table>
+
+<input type="submit" name="Continue" value="Continue">
+<input type="submit" name="Abort" value="Abort">
+</form>
+
+{% endblock %}

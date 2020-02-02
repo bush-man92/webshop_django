@@ -1,0 +1,54 @@
+{% extends "webshopApp/base.html" %}
+
+{% block content %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    {% for item in cart %}
+    <tbody>
+        <tr>
+                <td>{{item.item.name}}</td>
+                <td>{{item.quantity}}</td>
+                <td>{{item.item.price}} KN</td>
+        </tr>
+    </tbody>
+    {% endfor %}
+</table>
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Address of delivery</th>
+            <th>Form of paying</th>
+            <th>Total price of purchase</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in purchase %}
+        <tr>
+                <td>{{item.user.username}}</td>
+                <td>{{item.address}}</td>
+                {% if item.paying == HOME %}
+                    <td>To your house</td>
+                {% else %}
+                    <td>To delivery address</td>
+                {% endif %}
+                <td>{{item.total_price}} KN</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<form method="post" action="{% url 'purchase_success' %}">
+    {% csrf_token %}
+    <label for="confirm">Confirm purchase and empty your cart</label>
+    <input type="submit" name="confirm" value="Confirm" required>
+</form>
+
+{% endblock %}

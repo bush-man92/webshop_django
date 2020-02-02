@@ -1,0 +1,48 @@
+{% extends "webshopApp/base.html" %}
+
+{% block content %}
+
+<form method="post" action="{% url 'create_item' %}" enctype="multipart/form-data">
+{% csrf_token %}
+<table>
+<tr>
+    <td>{{ form.name.label_tag }}</td>
+    <td>{{ form.name }}</td>
+    {% if form.errors.name %}
+    <td>{{form.errors.name}}</td>
+    {% endif %}
+</tr>
+<tr>
+    <td>{{ form.price.label_tag }}</td>
+    <td>{{ form.price }}</td>
+    {% if form.errors.price %}
+    <td>{{form.errors.price}}</td>
+    {% endif %}
+</tr>
+<tr>
+    <td>{{ form.about.label_tag }}</td>
+    <td>{{ form.about }}</td>
+    {% if form.about.price %}
+    <td>{{form.errors.about}}</td>
+    {% endif %}
+</tr>
+<tr>
+    <td>{{ form.photo.label_tag }}</td>
+    <td>{{ form.photo }}</td>
+    {% if form.photo.price %}
+    <td>{{form.errors.photo}}</td>
+    {% endif %}
+</tr>
+<tr>
+    <td>{{ form.photo_link.label_tag }}</td>
+    <td>{{ form.photo_link }}</td>
+    {% if form.photo_link %}
+    <td>{{form.errors.photo_link}}</td>
+    {% endif %}
+</tr>
+</table>
+
+<input type="submit" value="Create item">
+</form>
+
+{% endblock %}

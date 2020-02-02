@@ -1,0 +1,72 @@
+{% extends "webshopApp/base.html" %}
+
+{% block content %}
+
+{% for item in item %}
+<table>
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Item</th>
+            <th>About</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                {% load static %}
+                {% if item.photo %}
+                <img
+                    src = "media/{{item.photo}}"
+                    title = {{item.name}}
+                    style = "width: 40px"
+                    style = "margin: 40px">
+                {% elif item.photo_link %}
+                <img
+                    src = "{{item.photo_link}}"
+                    title = {{item.name}}
+                    style = "width: 40px"
+                    style = "margin: 40px">
+                {% else %}
+                <img
+                    src = "{% static 'no_image.jpg' %}"
+                    title = {{item.name}}
+                    style = "width: 40px"
+                    style = "margin: 40px">
+                {% endif %}
+            </td>
+            <td>{{item.name}}</td>
+            <td>{{item.about}}</td>
+            <td>{{item.price}} KN</td>
+        </tr>
+    </tbody>
+</table>
+<form method="post" action="{% url 'product' item_id=item.id %}">
+    {% csrf_token %}
+        <div>{{ form.comment }}</div>
+        <div><input type="submit" value="Comment"></div>
+</form>
+
+{% for comment in comments %}
+{% if comment.approved or user.is_superuser %}
+<table>
+    <thead>
+        <tr>
+            <th>{{comment.username}}</th>
+            <th>Created at</th>
+        </tr>
+    </thead>
+    <tbod>
+        <tr>
+            <td>{{comment.comment}}</td>
+            <td>{{comment.created_at}}</td>
+        </tr>
+    </tbod>
+</table>
+{% endif %}
+{% endfor %}
+
+{% endfor %}
+
+{% endblock %}

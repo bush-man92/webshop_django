@@ -1,0 +1,28 @@
+{% extends "webshopApp/base.html" %}
+
+{% block content %}
+
+<form method="post" action="{% url 'purchase_credit_card' %}">
+{% csrf_token %}
+<table>
+<tr>
+    <td>{{ form.credit_card.label_tag }}</td>
+    <td>{{ form.credit_card }}</td>
+    {% if form.errors.credit_card %}
+        <td>{{ form.errors.credit_card }}</td>
+    {% endif %}
+</tr>
+<tr>
+    <td>{{ form.security_number.label_tag }}</td>
+    <td>{{ form.security_number }}</td>
+    {% if form.errors.security_number %}
+        <td>{{ form.errors.security_number }}</td>
+    {% endif %}
+</tr>
+</table>
+
+<input type="submit" name="Purchase" value="Purchase">
+<input type="submit" name="Abort" value="Purchase">
+</form>
+
+{% endblock %}

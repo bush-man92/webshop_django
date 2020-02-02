@@ -1,0 +1,44 @@
+{% extends "webshopApp/base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+      {{ user }}'s CART
+    </div>
+    <div class="card-body">
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            {% if cart %}
+            {% for item in cart %}
+            <tbody>
+                <tr>
+                        <td>{{item.item.name}}</td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.item.price}} KN</td>
+                        <form method="post" action="{% url 'shopping_cart' %}">
+                            {% csrf_token %}
+                            <td><input type="number" name="quantity" required></td>
+                            <td hidden><input name="item_id" value={{item.item.id}} required></td>
+                            <td><input type="submit" value="Remove from Cart"></td>
+                        </form>
+                </tr>
+            </tbody>
+            {% endfor %}
+            {% else %}
+            <p>Nothing in your cart.</p>
+            {% endif %}
+        </table>
+        <a href="{% url 'purchase' %}"><button>Purchase</button></a>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

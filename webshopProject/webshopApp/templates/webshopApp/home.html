@@ -1,0 +1,64 @@
+{% extends "webshopApp/base.html" %}
+
+{% block content %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Buy</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if allItems %}
+            {% for item in allItems %}
+            <tr>
+                <td>
+                    {% load static %}
+                    {% if item.photo %}
+                    <img
+                        src = "media/{{item.photo}}"
+                        title = {{item.name}}
+                        style = "width: 40px"
+                        style = "margin: 40px">
+                    {% elif item.photo_link %}
+                    <img
+                        src = "{{item.photo_link}}"
+                        title = {{item.name}}
+                        style = "width: 40px"
+                        style = "margin: 40px">
+                    {% else %}
+                    <img
+                        src = "{% static 'no_image.jpg' %}"
+                        title = {{item.name}}
+                        style = "width: 40px"
+                        style = "margin: 40px">
+                    {% endif %}
+                </td>
+                <td><a href="{% url 'product' item.id %}">{{item.name}}</a></td>
+                <td>{{item.price}} KN</td>
+                <form method="post" action="{% url 'home' %}">
+                    {% csrf_token %}
+                    {% if user.is_authenticated %}
+                        <td><input type="number" name="quantity"></td>
+                        <td hidden><input name="item_id" value={{item.id}} required></td>
+                        <td><input type="submit" name="Add to cart" value="Add to cart"></td>
+                    {% else %}
+                        <td>Unabled</td>
+                        <td>You have to login</td>
+                    {% endif %}
+                    {% if user.is_staff %}
+                        <td><input type="submit" name="Delete" value="Delete item"></td>
+                    {% endif %}
+                </form>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <p>No item found</p>
+            {% endif %}
+        </tbody>
+    </table>    
+{% endblock %}
