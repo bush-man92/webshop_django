@@ -4,6 +4,8 @@ from datetime import datetime
 
 # Create your models here.
 
+"modeli za bazu podataka"
+
 class Item(models.Model):
     name = models.CharField(max_length=50)
     price = models.IntegerField(

@@ -13,14 +13,17 @@ from .forms import RegistrationForm, LoginForm, PurchaseForm, PurchaseCreditCard
 # Create your views here.
 
 class homeView(ListView):
+    """
+        lista svih produkta u home page-u
+    """
     template_name = 'webshopApp/home.html'
     queryset = Item.objects.all()
     object_list = queryset
     context_object_name = 'allItems'
-    paginate_by = 10
 
     def post(self, form):
         if form.POST.get('quantity') == '':
+            "ako se posta quantity kao prazan string quantity je 0"
             quantity = 0
         elif form.POST.get('quantity'):
             quantity = int(form.POST.get('quantity'))
@@ -28,6 +31,7 @@ class homeView(ListView):
             item_id = int(form.POST.get('item_id'))
         user = self.request.user
         if 'Search' in self.request.POST:
+            "gleda dali je search integar ili string pa pretražuje cijene ili imena"
             search = self.request.POST.get('Search')
             try:
                 search = int(search)
@@ -37,11 +41,13 @@ class homeView(ListView):
             context = {'allItems' : queryset}
             return render(self.request, self.template_name, context)
         if 'Delete' in self.request.POST:
+            "mogućnost brisanja za admina"
             cart = Cart.objects.filter(item_id=item_id).delete()
             comment = Comment.objects.filter(item_id=item_id).delete()
             item = Item.objects.get(id=item_id).delete()
             return render(self.request, self.template_name, context=self.get_context_data())
         if quantity > 0 and user.is_authenticated:
+            "update košarice korisnika"
             cart = Cart.objects.filter(user_id=user.id, item_id=item_id)
             if cart:
                 quantity = cart[0].quantity + quantity
@@ -51,6 +57,9 @@ class homeView(ListView):
         return render(self.request, self.template_name, context=self.get_context_data())
 
 class registrationView(FormView):
+    """
+        registracija korisnika
+    """
     template_name = 'webshopApp/registration_form.html'
     form_class = RegistrationForm
     success_url = 'home'
@@ -64,12 +73,14 @@ class registrationView(FormView):
             context = {'form' : form}
             return render(self.request, self.template_name, context)
         else:
+            "stvara korisnika i pohranjuje hashani password"
             hashed_password = make_password(password=password, salt=None, hasher='bcrypt_sha256')
             user = User.objects.create(username = username, password = hashed_password, email = email)
             login(self.request, user)
             return redirect(self.success_url)
 
     def email_check(self, email):
+        "provjerava postojanje email-a u bazi podataka"
         try:
             user = User.objects.get(email=email)
             return False
@@ -77,11 +88,15 @@ class registrationView(FormView):
             return True
 
 class loginView(FormView):
+    """
+        login korisnika
+    """
     template_name = 'webshopApp/login.html'
     form_class = LoginForm
     success_url = 'home'
 
     def form_valid(self, form):
+        "provjerava postojanje username-a, zatim provjerava password te redirecta"
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
         redirect_to = self.request.POST['next']
@@ -105,6 +120,9 @@ class loginView(FormView):
                 return render(self.request, self.template_name, context)
 
 class logoutView(View):
+    """
+        logout korisnika
+    """
     template_name = 'webshopApp/logout.html'
 
     def get(self, request):
@@ -112,15 +130,20 @@ class logoutView(View):
         return render(self.request, self.template_name)
 
 class shopping_cartView(LoginRequiredMixin, ListView):
+    """
+        košarica korisnika
+    """
     template_name = 'webshopApp/shopping_cart.html'
     login_url = 'login/'
 
     def get(self, request):
+        "pretražuje košaricu vezanu za korisnika i rendera stranicu"
         user = self.request.user
         queryset = Cart.objects.filter(user_id=user.id).select_related('item')
         return render(self.request, self.template_name, context={'cart' : queryset})
 
     def post(self, form):
+        "izbacivanje iz košarice"
         quantity = int(form.POST.get('quantity'))
         if quantity < 0:
             quantity = abs(quantity)
@@ -137,6 +160,9 @@ class shopping_cartView(LoginRequiredMixin, ListView):
         return render(self.request, self.template_name, context={'cart' : queryset})
 
 class purchaseView(LoginRequiredMixin, FormView):
+    """
+        prva stranica purchasa, upit adrese, načina plaćanja i dostave
+    """
     template_name = 'webshopApp/purchase.html'
     login_url = 'login/'
     form_class = PurchaseForm
@@ -168,6 +194,9 @@ class purchaseView(LoginRequiredMixin, FormView):
             return redirect('purchase_success')
 
 class purchase_credit_cardView(LoginRequiredMixin, FormView):
+    """
+        druga stranica purchasa, samo za kreditne kartice
+    """
     template_name = 'webshopApp/purchase_credit_card.html'
     login_url = 'login/'
     form_class = PurchaseCreditCardForm
@@ -199,6 +228,9 @@ class purchase_credit_cardView(LoginRequiredMixin, FormView):
             return redirect('purchase_success')
 
 class purchase_successView(LoginRequiredMixin, ListView):
+    """
+        stranica potvrde kupnje i slanje maila s potvrdom
+    """
     template_name = 'webshopApp/purchase_success.html'
     login_url = 'login/'
 
@@ -226,6 +258,9 @@ class purchase_successView(LoginRequiredMixin, ListView):
         return redirect('home')
 
 class productView(ListView):
+    """
+        stranica pojedinog produkta s komentarima
+    """
     template_name = 'webshopApp/product.html'
     form_class = CommentForm
     paginate_by = 10
@@ -249,6 +284,9 @@ class productView(ListView):
         return render(self.request, self.template_name, context)
 
 class adminView(SuperuserRequiredMixin, LoginRequiredMixin, ListView):
+    """
+        admin pregled komentara, potvrda i brisanje
+    """
     template_name = 'webshopApp/admin.html'
     queryset = Comment.objects.filter(approved=False).select_related('item')
     object_list = queryset
@@ -265,6 +303,9 @@ class adminView(SuperuserRequiredMixin, LoginRequiredMixin, ListView):
             return render(self.request, self.template_name, self.get_context_data())
 
 class create_itemView(SuperuserRequiredMixin, LoginRequiredMixin, FormView):
+    """
+        stvaranje novih produkata za admina
+    """
     template_name = 'webshopApp/create_item.html'
     login_url = 'login/'
     form_class = CreateItemForm

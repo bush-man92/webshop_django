@@ -15,6 +15,8 @@ DELIVERY_CHOICES = [
     ('PICK', "To pickup address")
 ]
 
+"izgled formi koje se koriste u stranicama"
+
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(max_length=254, required=True, help_text='Enter a valid email address.')
 
