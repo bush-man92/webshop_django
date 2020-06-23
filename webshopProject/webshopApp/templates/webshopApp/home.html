@@ -33,7 +33,7 @@
                     {% else %}
                     <img
                         src = "{% static 'no_image.jpg' %}"
-                        title = {{item.name}}
+                        title = '{{item.name}}'
                         style = "width: 40px"
                         style = "margin: 40px">
                     {% endif %}
@@ -50,7 +50,8 @@
                         <td>Unabled</td>
                         <td>You have to login</td>
                     {% endif %}
-                    {% if user.is_staff %}
+                    {% if user.is_superuser %}
+                        <td hidden><input name="item_id" value={{item.id}} required></td>
                         <td><input type="submit" name="Delete" value="Delete item"></td>
                     {% endif %}
                 </form>

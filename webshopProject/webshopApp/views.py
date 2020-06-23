@@ -45,7 +45,9 @@ class homeView(ListView):
             cart = Cart.objects.filter(item_id=item_id).delete()
             comment = Comment.objects.filter(item_id=item_id).delete()
             item = Item.objects.get(id=item_id).delete()
-            return render(self.request, self.template_name, context=self.get_context_data())
+            queryset = Item.objects.all()
+            context = {'allItems' : queryset}
+            return render(self.request, self.template_name, context)
         if quantity > 0 and user.is_authenticated:
             "update košarice korisnika"
             cart = Cart.objects.filter(user_id=user.id, item_id=item_id)
